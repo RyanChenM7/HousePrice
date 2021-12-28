@@ -5,7 +5,6 @@ pd.options.display.max_columns = 20
 
 import matplotlib.pyplot as plt
 from kaggle.api.kaggle_api_extended import KaggleApi
-from zipfile import ZipFile
 
 import scipy.stats as stats
 import sklearn.linear_model as linear_model
@@ -22,13 +21,15 @@ import scipy.stats as st
 api = KaggleApi()
 api.authenticate()
 
+"""
+// Download and extract dataset //
+
+from zipfile import ZipFile
 api.competition_download_files("house-prices-advanced-regression-techniques")
-
-
 zf = ZipFile('house-prices-advanced-regression-techniques.zip')
 zf.extractall("data/")
 zf.close()
-
+"""
 
 # \o/ Hello Catherine \o/
 
@@ -43,7 +44,19 @@ quantitative.remove('SalePrice')
 quantitative.remove('Id')
 qualitative = [f for f in train.columns if train.dtypes[f] == 'object']
 
+missing = train.isnull().sum()
+missing = missing[missing > 0]
+missing.sort_values(inplace=True)
+missing.plot.bar()
 
+
+y = train['SalePrice']
+plt.figure(1); plt.title('Johnson SU')
+sns.distplot(y, kde=False, fit=st.johnsonsu)
+plt.figure(2); plt.title('Normal')
+sns.distplot(y, kde=False, fit=st.norm)
+plt.figure(3); plt.title('Log Normal')
+sns.distplot(y, kde=False, fit=st.lognorm)
 
 
 """
